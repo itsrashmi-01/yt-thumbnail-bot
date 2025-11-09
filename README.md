@@ -1,0 +1,1 @@
+# YT-Thumbnail-Bot\n\nTelegram bot built with Pyrogram to fetch YouTube video thumbnails.\nDeploy on Koyeb or locally with Docker.\n
