@@ -1,4 +1,4 @@
-# handlers.py import logging
+import logging
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from .utils import extract_video_id, fetch_bytes, head_ok
@@ -61,7 +61,7 @@ def register_handlers(app):
         # Check subscription
         joined = await is_member(c, user.id)
         if not joined:
-            link = Config.FORCE_CHANNEL if not Config.FORCE_CHANNEL.startswith("@") else f"https://t.me/{Config.FORCE_CHANNEL.lstrip('@')}"
+            link = Config.FORCE_CHANNEL if not (Config.FORCE_CHANNEL or "").startswith("@") else f"https://t.me/{Config.FORCE_CHANNEL.lstrip('@')}"
             await m.reply_text("🔒 Please join the update channel to use this bot.",
                                reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Join Channel", url=link)]]))
             return
@@ -119,7 +119,11 @@ def register_handlers(app):
             await q.message.edit_text("More features coming soon...", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("❮ Back", callback_data="back")]]))
             await q.answer()
         elif data == "back":
-            await q.message.edit_text("👋 Welcome back!", reply_markup=start_markup())
+            try:
+                # Try to restore start message (if possible)
+                await q.message.edit_text("👋 Welcome back!", reply_markup=start_markup())
+            except Exception:
+                await q.answer()
             await q.answer()
 
     async def is_member(client, user_id: int) -> bool:
@@ -144,4 +148,3 @@ def register_handlers(app):
             await client.send_message(Config.LOG_CHANNEL, txt)
         except Exception:
             pass
-placeholder (full logic in canvas)
